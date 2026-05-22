@@ -29,7 +29,8 @@ int limitarAngulo(int valor)
 }
 
 // Mostra estado atual
-void mostrarEstado() {
+void mostrarEstado() 
+{
   Serial.println("----------------------------------");
   Serial.print("Motor baixo esquerda [8] : ");
   Serial.println(angBaixoEsq);
