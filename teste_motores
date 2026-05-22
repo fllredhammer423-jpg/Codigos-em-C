@@ -21,7 +21,8 @@ int angBaixoDir = 90;
 int passo = 25;
 
 // Limita ângulo entre 0 e 180
-int limitarAngulo(int valor) {
+int limitarAngulo(int valor)
+{
   if (valor > 180) return 180;
   if (valor < 0) return 0;
   return valor;
