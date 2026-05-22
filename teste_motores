@@ -1,0 +1,162 @@
+#include <Servo.h>
+
+Servo motorBaixoEsq;
+Servo motorCimaEsq;
+Servo motorCimaDir;
+Servo motorBaixoDir;
+
+// Pinos dos motores
+const int pinMotorBaixoEsq = 8;
+const int pinMotorCimaEsq  = 9;
+const int pinMotorCimaDir  = 10;
+const int pinMotorBaixoDir = 11;
+
+// Ângulos iniciais
+int angBaixoEsq = 90;
+int angCimaEsq  = 90;
+int angCimaDir  = 90;
+int angBaixoDir = 90;
+
+// Passo de variação
+int passo = 25;
+
+// Limita ângulo entre 0 e 180
+int limitarAngulo(int valor) {
+  if (valor > 180) return 180;
+  if (valor < 0) return 0;
+  return valor;
+}
+
+// Mostra estado atual
+void mostrarEstado() {
+  Serial.println("----------------------------------");
+  Serial.print("Motor baixo esquerda [8] : ");
+  Serial.println(angBaixoEsq);
+
+  Serial.print("Motor esquerda cima [9]  : ");
+  Serial.println(angCimaEsq);
+
+  Serial.print("Motor direita cima [10]  : ");
+  Serial.println(angCimaDir);
+
+  Serial.print("Motor direita baixo [11] : ");
+  Serial.println(angBaixoDir);
+  Serial.println("----------------------------------");
+  Serial.println();
+}
+
+void setup() {
+  Serial.begin(9600);
+
+  motorBaixoEsq.attach(pinMotorBaixoEsq);
+  motorCimaEsq.attach(pinMotorCimaEsq);
+  motorCimaDir.attach(pinMotorCimaDir);
+  motorBaixoDir.attach(pinMotorBaixoDir);
+
+  motorBaixoEsq.write(angBaixoEsq);
+  motorCimaEsq.write(angCimaEsq);
+  motorCimaDir.write(angCimaDir);
+  motorBaixoDir.write(angBaixoDir);
+
+  Serial.println("Controle dos 4 motores iniciado.");
+  Serial.println("Use as teclas:");
+  Serial.println("Q aumenta / A diminui -> motor baixo esquerda");
+  Serial.println("W aumenta / S diminui -> motor esquerda cima");
+  Serial.println("E aumenta / D diminui -> motor direita cima");
+  Serial.println("R aumenta / F diminui -> motor direita baixo");
+  Serial.println();
+
+  mostrarEstado();
+}
+
+void loop() {
+  if (Serial.available() > 0) {
+    char comando = Serial.read();
+
+    // Motor baixo esquerda
+    if (comando == 'Q' || comando == 'q') {
+      angBaixoEsq += passo;
+      
+      motorBaixoEsq.write(angBaixoEsq);
+      Serial.print("Motor baixo esquerda aumentou para: ");
+      Serial.println(angBaixoEsq);
+    }
+    else if (comando == 'A' || comando == 'a') {
+      angBaixoEsq -= passo;
+      motorBaixoEsq.write(angBaixoEsq);
+      Serial.print("Motor baixo esquerda diminuiu para: ");
+      Serial.println(angBaixoEsq);
+    }
+
+    // Motor esquerda cima
+    else if (comando == 'W' || comando == 'w') {
+      angCimaEsq += passo;
+      angCimaEsq = limitarAngulo(angCimaEsq);
+      motorCimaEsq.write(angCimaEsq);
+      Serial.print("Motor esquerda cima aumentou para: ");
+      Serial.println(angCimaEsq);
+    }
+    else if (comando == 'S' || comando == 's') {
+      angCimaEsq -= passo;
+      angCimaEsq = limitarAngulo(angCimaEsq);
+      motorCimaEsq.write(angCimaEsq);
+      Serial.print("Motor esquerda cima diminuiu para: ");
+      Serial.println(angCimaEsq);
+    }
+
+    // Motor direita cima
+    else if (comando == 'E' || comando == 'e') {
+      angCimaDir += passo;
+      angCimaDir = limitarAngulo(angCimaDir);
+      motorCimaDir.write(angCimaDir);
+      Serial.print("Motor direita cima aumentou para: ");
+      Serial.println(angCimaDir);
+    }
+    else if (comando == 'D' || comando == 'd') {
+      angCimaDir -= passo;
+      angCimaDir = limitarAngulo(angCimaDir);
+      motorCimaDir.write(angCimaDir);
+      Serial.print("Motor direita cima diminuiu para: ");
+      Serial.println(angCimaDir);
+    }
+
+    // Motor direita baixo
+    else if (comando == 'R' || comando == 'r') {
+      angBaixoDir += passo;
+      angBaixoDir = limitarAngulo(angBaixoDir);
+      motorBaixoDir.write(angBaixoDir);
+      Serial.print("Motor direita baixo aumentou para: ");
+      Serial.println(angBaixoDir);
+    }
+    else if (comando == 'F' || comando == 'f') {
+      angBaixoDir -= passo;
+      angBaixoDir = limitarAngulo(angBaixoDir);
+      motorBaixoDir.write(angBaixoDir);
+      Serial.print("Motor direita baixo diminuiu para: ");
+      Serial.println(angBaixoDir);
+    }
+    else if (comando == 'p' || comando == 'P') {
+      motorBaixoDir.write(0);
+      motorBaixoEsq.write(0);
+      motorCimaDir.write(0);
+      motorCimaEsq.write(0);
+    }
+    else if (comando == 'j' || comando == 'J') {
+      motorBaixoDir.write(180);
+      motorBaixoEsq.write(180);
+      motorCimaDir.write(180);
+      motorCimaEsq.write(180);
+    }
+    else if (comando == 'h' || comando == 'H') {
+      motorBaixoEsq.write(180);
+      delay(1500);
+      motorBaixoEsq.write(90);
+      delay(1500);
+      motorBaixoEsq.write(0);
+      delay(1500);
+    }
+
+
+    mostrarEstado();
+  }
+}
