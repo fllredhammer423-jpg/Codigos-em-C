@@ -155,8 +155,6 @@ void loop() {
       motorBaixoEsq.write(0);
       delay(1500);
     }
-
-
     mostrarEstado();
   }
 }
